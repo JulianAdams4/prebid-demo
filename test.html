@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Prebid Demo</title>
+    </head>
+    <body>
+        <h1>Demo</h1>
+
+        <!-- Espacio publicitario -->
+        <div id="ad-container">
+            <script type="text/javascript">
+                googletag.cmd.push(function () {
+                    googletag.display("ad-container");
+                });
+            </script>
+        </div>
+        <!-- Espacio publicitario -->
+
+        <p>Lorem ipsum sit amet</p>
+
+        <script src="https://www.googletagservices.com/tag/js/gpt.js"></script>
+        <script
+            async
+            src="https://cdn.jsdelivr.net/npm/prebid.js@latest/dist/not-for-prod/prebid.js"
+        ></script>
+        <!-- <script src="prebid-8.8.0.js"></script> -->
+
+        <script>
+            const DIV_ID = "ad-container";
+            const NETWORK_ID = 21832148001;
+            const PREBID_TIMEOUT = 3000;
+
+            const AppNexusBidder = "appnexus";
+            const AppNexusPlacementID = 13144370;
+
+            const adUnits = [
+                {
+                    code: "ad-container",
+                    mediaTypes: {
+                        banner: {
+                            sizes: [
+                                [300, 250],
+                                [728, 90],
+                            ],
+                        },
+                    },
+                    bids: [
+                        {
+                            bidder: AppNexusBidder,
+                            params: {
+                                placementId: AppNexusPlacementID,
+                            },
+                        },
+                        // {
+                        //     bidder: "rubicon",
+                        //     params: {
+                        //         accountId: "YYYY",
+                        //         siteId: "ZZZZ",
+                        //         zoneId: "WWWW",
+                        //     },
+                        // },
+                    ],
+                },
+            ];
+
+            var pbjs = pbjs || {};
+            pbjs.que = pbjs.que || [];
+            pbjs.que.push(function () {
+                pbjs.addAdUnits(adUnits);
+                pbjs.requestBids({
+                    bidsBackHandler: function () {
+                        pbjs.setTargetingForGPTAsync();
+                        googletag.pubads().refresh();
+                    },
+                    timeout: PREBID_TIMEOUT,
+                });
+            });
+
+            // Configuración de Google Ad Manager
+            var googletag = googletag || {};
+            googletag.cmd = googletag.cmd || [];
+            googletag.cmd.push(function () {
+                googletag
+                    .defineSlot(
+                        `/${NETWORK_ID}/slot`,
+                        [
+                            [300, 250],
+                            [728, 90],
+                        ],
+                        DIV_ID
+                    )
+                    .addService(googletag.pubads());
+                googletag.pubads().enableSingleRequest();
+                googletag.enableServices();
+            });
+        </script>
+    </body>
+</html>
